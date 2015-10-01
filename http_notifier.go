@@ -47,8 +47,7 @@ func NewHttpNotifier(app *ApplicationContext) (*HttpNotifier, error) {
 	}
 	templateDelete, err := template.ParseFiles(app.Config.Httpnotifier.TemplateDelete)
 	if err != nil {
-		log.Criticalf("Cannot parse HTTP notifier DELETE template: %v", err)
-		os.Exit(1)
+		log.Infof("Cannot parse HTTP notifier DELETE template: %v. Delete Request will be skipped", err)
 	}
 
 	// Parse the extra parameters for the templates
@@ -144,6 +143,12 @@ func (notifier *HttpNotifier) handleEvaluationResponse(result *ConsumerGroupStat
 		}
 	} else {
 		if _, ok := notifier.groupIds[result.Cluster][result.Group]; ok {
+			if(notifier.templateDelete == nil) {
+				log.Infof("Skipping Delete Request for group %s in cluster %s (Id %s)", result.Group, result.Cluster,
+					notifier.groupIds[result.Cluster][result.Group])
+				return
+			}
+
 			// Send DELETE to HTTP endpoint
 			bytesToSend := new(bytes.Buffer)
 			err := notifier.templateDelete.Execute(bytesToSend, struct {
