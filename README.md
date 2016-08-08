@@ -20,10 +20,10 @@ If you have not yet installed the [Go Package Manager](https://github.com/pote/g
 
 ### Build and Install
 ```
-$ go get github.com/linkedin/burrow
-$ cd $GOPATH/src/github.com/linkedin/burrow
+$ go get github.com/linkedin/Burrow
+$ cd $GOPATH/src/github.com/linkedin/Burrow
 $ gpm install
-$ go install
+$ go build -o burrow && mv burrow $GOPATH/bin/
 ```
 
 ### Running Burrow
